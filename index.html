@@ -19,7 +19,6 @@
     var api;
     const domain = 'meet.aproxtime.com';
     var options = {
-        roomName: '',
         width: '90%',
         parentNode: document.querySelector('#iframe'),
         userInfo: {
@@ -35,22 +34,27 @@
 
     window.onload = function () {
         const param = window.location.search
-        const bdata = param.substr(1, param.length)
-        console.log(bdata)
-        try {
-            const prsed = new URLSearchParams(atob(bdata))
-            options.userInfo.displayName = prsed.get('name')
-            options.roomName = prsed.get('room')
-            api = new JitsiMeetExternalAPI(domain, options)
-            api.addEventListeners({
-                readyToClose: function (object) {
-                    api.dispose()
-                },
-            })
-        } catch (error) {
-            console.log(error)
+        if (param != "") {
+            const bdata = param.substr(1, param.length)
+            console.log(bdata)
+            try {
+                const prsed = new URLSearchParams(atob(bdata))
+                options.userInfo.displayName = prsed.get('name')
+                options.roomName = prsed.get('room')
+                api = new JitsiMeetExternalAPI(domain, options)
+                api.addEventListeners({
+                    readyToClose: function (object) {
+                        api.dispose()
+                    },
+                })
+            } catch (error) {
+                console.log(error)
+                document.getElementById("info").innerHTML = "Wrong Code"
+            }
+        } else {
             document.getElementById("info").innerHTML = "Wrong Code"
         }
+
     }
 
     function functOnClose(object) {
