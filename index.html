@@ -1,0 +1,72 @@
+<html>
+
+<head>
+    <title>Jitsi Conference</title>
+    <script src="//meet.aproxtime.com/external_api.js"></script>
+</head>
+
+<body>
+    <center>
+        <h1>Testing Conference</h1>
+    </center>
+    <center>
+        <h3 id="info"></h3>
+        <div id="iframe">
+        </div>
+    </center>
+</body>
+<script>
+    var api;
+    const domain = 'meet.aproxtime.com';
+    var options = {
+        roomName: '',
+        width: '90%',
+        parentNode: document.querySelector('#iframe'),
+        userInfo: {
+            displayName: '',
+        },
+        interfaceConfigOverwrite: {
+            APP_NAME: 'Test',
+            SHOW_JITSI_WATERMARK: false,
+            SHOW_BRAND_WATERMARK: false,
+            SHOW_WATERMARK_FOR_GUESTS: false
+        }
+    };
+
+    window.onload = function () {
+        const param = window.location.search
+        const bdata = param.substr(1, param.length)
+        console.log(bdata)
+        try {
+            const prsed = new URLSearchParams(atob(bdata))
+            options.userInfo.displayName = prsed.get('name')
+            options.roomName = prsed.get('room')
+            api = new JitsiMeetExternalAPI(domain, options)
+            api.addEventListeners({
+                readyToClose: function (object) {
+                    api.dispose()
+                },
+            })
+        } catch (error) {
+            console.log(error)
+            document.getElementById("info").innerHTML = "Wrong Code"
+        }
+    }
+
+    function functOnClose(object) {
+        api.dispose()
+    }
+
+    // function join_room() {
+    //     let room_name = document.querySelector("[name=room_name]").value
+    //     options.roomName = room_name
+    //     api = new JitsiMeetExternalAPI(domain, options)
+    //     api.addEventListeners({
+    //         readyToClose: function (object) {
+    //             api.dispose()
+    //         },
+    //     });
+    // }
+</script>
+
+</html>
